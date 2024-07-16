@@ -14,7 +14,7 @@ const web3 = new Web3(process.env.RPC_URL);
 
 const account = web3.eth.accounts.privateKeyToAccount(process.env.PRIVATE_KEY);
 
-const Buy = async (token, amount) => {
+export const Buy = async (token, amount) => {
   const ContractPCS = (
     await Contract.Instance(Types.ROUTER, config.pcsRouterContract, config)
   ).methods;
@@ -94,7 +94,7 @@ const Buy = async (token, amount) => {
   } else log(`ERROR: Not allowence for ${tokenOut}`);
 };
 
-const Sell = async (token, amount) => {
+export const Sell = async (token, amount) => {
   const ContractPCS = (
     await Contract.Instance(Types.ROUTER, config.pcsRouterContract, config)
   ).methods;
@@ -173,21 +173,3 @@ const Sell = async (token, amount) => {
     } else log(`ERROR: can't buy ${tokenOut}`);
   } else log(`ERROR: Not allowence for ${tokenOut}`);
 };
-
-await Buy(
-  {
-    address: "0x7ef95a0FEE0Dd31b22626fA2e10Ee6A223F8a684",
-    decimals: 18,
-    name: "usdt",
-  },
-  0.02,
-);
-
-await Sell(
-  {
-    address: "0x7ef95a0FEE0Dd31b22626fA2e10Ee6A223F8a684",
-    decimals: 18,
-    name: "usdt",
-  },
-  10,
-);
