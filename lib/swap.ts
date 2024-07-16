@@ -166,7 +166,7 @@ const Sell = async (token, amount) => {
       [tokenIn, tokenOut],
       config.userAddress,
       Date.now() + 1000 * 60 * 10,
-    ).send({ value: amountIn.toString() });
+    ).send({ value: amountIn.toString()});
 
     if (tx2.status) {
       const receipt = await tx2.transactionHash;
