@@ -57,13 +57,12 @@ const Buy = async (token, amount) => {
       tokenIn,
       tokenOut,
     ]).call();
-    console.log(amounts);
     var amountOutMin = Decode.FromWei(
       amounts[amounts.length - 1],
       token.decimals,
     );
     const expectedAmount = amountOutMin;
-    amountOutMin -= (amountOutMin * config.slippage) / 100n;
+    amountOutMin -= (amountOutMin * Number(config.slippage)) / 100;
 
     log(`
          Buying ${tokenOut}
@@ -134,24 +133,16 @@ const Sell = async (token, amount) => {
   }
 
   if (tx.status) {
-    console.log(amountIn)
-    console.log([
-      tokenIn,
-      tokenOut,
-    ])
     const amounts = await ContractPCS.getAmountsOut(amountIn, [
       tokenIn,
       tokenOut,
     ]).call();
 
-    var amountOutMin = Decode.FromWei(
-      amounts[amounts.length -1],
-      18,
-    );
-    console.log("amountOutMin", amountOutMin)
+    var amountOutMin = Decode.FromWei(amounts[amounts.length - 1], 18);
+    console.log("amountOutMin", amountOutMin);
     const expectedAmount = amountOutMin;
-    amountOutMin -= amountOutMin * Number(config.slippage) / 100;
-    
+    amountOutMin -= (amountOutMin * Number(config.slippage)) / 100;
+
     log(`
          Selling ${tokenOut}
          =================
@@ -160,13 +151,14 @@ const Sell = async (token, amount) => {
        `);
 
     Decode.ToWei(amountOutMin, 18);
+
     const tx2 = await ContractPCS.swapExactTokensForETH(
       amountIn,
       Decode.ToWei(amountOutMin, 18),
       [tokenIn, tokenOut],
       config.userAddress,
       Date.now() + 1000 * 60 * 10,
-    ).send({ value: amountIn.toString()});
+    ).send({ gas: 1000000 });
 
     if (tx2.status) {
       const receipt = await tx2.transactionHash;
@@ -182,11 +174,20 @@ const Sell = async (token, amount) => {
   } else log(`ERROR: Not allowence for ${tokenOut}`);
 };
 
+await Buy(
+  {
+    address: "0x7ef95a0FEE0Dd31b22626fA2e10Ee6A223F8a684",
+    decimals: 18,
+    name: "usdt",
+  },
+  0.02,
+);
+
 await Sell(
   {
     address: "0x7ef95a0FEE0Dd31b22626fA2e10Ee6A223F8a684",
     decimals: 18,
-    name: 'usdt'
+    name: "usdt",
   },
   10,
 );
